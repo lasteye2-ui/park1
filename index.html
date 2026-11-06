@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2026학년도 3학년 현장체험학습 관리</title>
+<style>
+:root{--navy:#183153;--blue:#2563eb;--bg:#f3f6fb;--line:#dbe3ee;--muted:#64748b}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:#172033;font-family:Arial,"Malgun Gothic",sans-serif}
+header{background:var(--navy);color:white;padding:22px max(18px,calc((100% - 1200px)/2))}
+header h1{font-size:22px;margin:0 0 6px}header p{margin:0;color:#dbeafe;font-size:13px}
+main{max-width:1200px;margin:22px auto;padding:0 16px}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+button,.btn{border:0;border-radius:8px;padding:10px 14px;background:var(--blue);color:#fff;font-weight:700;cursor:pointer}
+button.secondary{background:#e2e8f0;color:#1e293b}button.active{background:var(--navy)}
+.panel{background:white;border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:16px;box-shadow:0 2px 8px #0f172a0a}
+h2{font-size:18px;margin:0 0 14px}.controls{display:flex;gap:10px;align-items:end;flex-wrap:wrap}
+label{font-size:13px;color:#475569;display:flex;flex-direction:column;gap:6px}
+select,input{padding:10px;border:1px solid #cbd5e1;border-radius:8px;background:white;min-width:140px;font-size:14px}
+.statrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}.stat{background:#eff6ff;padding:12px 16px;border-radius:10px;min-width:130px}
+.stat b{display:block;font-size:22px;color:#1d4ed8}.stat span{font-size:12px;color:#475569}
+.tablewrap{overflow:auto;max-height:65vh;border:1px solid var(--line);border-radius:8px;margin-top:14px}
+table{border-collapse:collapse;width:100%;font-size:13px;white-space:nowrap}th,td{border-bottom:1px solid #e2e8f0;border-right:1px solid #eef2f7;padding:8px;text-align:center}
+th{background:#edf2f8;position:sticky;top:0;z-index:1}td.name{text-align:left;min-width:90px}td.left{font-weight:700;color:#1d4ed8}
+.small{font-size:12px;color:var(--muted);line-height:1.6}.hidden{display:none!important}.danger{color:#b91c1c}.good{color:#047857}
+.month-title{font-weight:700;margin:18px 0 8px}.badge{display:inline-block;background:#dbeafe;color:#1e40af;border-radius:20px;padding:3px 8px;font-size:11px}
+@media print{header,.tabs,.no-print{display:none!important}body{background:white}main{max-width:none;margin:0;padding:0}.panel{box-shadow:none;border:0;padding:0}.tablewrap{max-height:none;overflow:visible}table{font-size:9px}th,td{padding:4px}}
+
+.onboard{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;background:linear-gradient(145deg,#eaf1fb,#f7f9fc)}
+.onboard-card{width:min(760px,100%);background:#fff;border:1px solid #dbe3ee;border-radius:22px;padding:clamp(26px,5vw,54px);box-shadow:0 18px 55px #18315318}
+.onboard-kicker{font-size:12px;letter-spacing:1.5px;color:#2563eb;font-weight:800;margin-bottom:14px}
+.onboard h1{font-size:clamp(27px,5vw,40px);line-height:1.4;color:#183153;margin:0 0 14px}
+.onboard p{color:#526176;line-height:1.8}
+.onboard-actions{display:flex;justify-content:space-between;gap:10px;margin-top:30px;flex-wrap:wrap}
+.onboard-actions button{min-width:112px;padding:13px 20px}
+.guide-list{display:grid;gap:12px;margin-top:20px}
+.guide-item{display:flex;gap:14px;padding:14px;background:#f5f8fc;border-radius:12px}
+.guide-num{flex:0 0 32px;height:32px;border-radius:50%;display:grid;place-items:center;background:#dbeafe;color:#1d4ed8;font-weight:800}
+.guide-item b{display:block;margin-bottom:4px;color:#1e293b}
+.guide-item p{margin:0;font-size:14px}
+#appHeader,#appMain{display:none}
+@media print{.onboard{display:none!important}#appHeader,#appMain{display:block!important}}
+
+.login-form{display:grid;gap:14px;margin-top:24px;max-width:420px}
+.login-form label{font-weight:700;color:#334155}
+.login-form input{width:100%;min-width:0;padding:13px 14px;font-size:16px}
+.login-error{min-height:20px;color:#b91c1c;font-size:13px}
+.login-note{font-size:12px;color:#64748b;line-height:1.6}
+</style>
+</head>
+<body>
+
+<section id="loginScreen" class="onboard">
+ <div class="onboard-card" style="max-width:560px">
+  <div class="onboard-kicker">TEACHER ACCESS</div>
+  <h1>교사용 로그인</h1>
+  <p>현장체험학습 관리 시스템에 접속하려면 아이디와 비밀번호를 입력하세요.</p>
+  <form id="loginForm" class="login-form" autocomplete="off">
+   <label for="loginId">아이디
+    <input id="loginId" name="username" type="text" placeholder="아이디 입력" required autocomplete="username">
+   </label>
+   <label for="loginPw">비밀번호
+    <input id="loginPw" name="password" type="password" placeholder="비밀번호 입력" required autocomplete="current-password">
+   </label>
+   <div id="loginError" class="login-error" role="alert"></div>
+   <button type="submit">로그인</button>
+  </form>
+ </div>
+</section>
+
+<section id="welcomeScreen" class="onboard" style="display:none">
+ <div class="onboard-card">
+  <div class="onboard-kicker">2026 SCHOOL FIELD EXPERIENCE</div>
+  <h1>2026학년도 3학년<br>현장체험학습 관리</h1>
+  <p>학생별 현장체험학습 날짜를 등록하고, 15일 기준 잔여일수와 11·12월 반별 출석부를 관리하는 시스템입니다.</p>
+  <p>다음 버튼을 눌러 사용설명서를 확인하세요.</p>
+  <div class="onboard-actions"><span></span><button id="welcomeNext" type="button">다음 →</button></div>
+ </div>
+</section>
+<section id="guideScreen" class="onboard" style="display:none">
+ <div class="onboard-card">
+  <div class="onboard-kicker">USER GUIDE</div>
+  <h1>사용설명서</h1>
+  <p>관리화면에서 다음 순서로 사용하세요.</p>
+  <div class="guide-list">
+   <div class="guide-item"><span class="guide-num">1</span><div><b>반과 학생 선택</b><p>현장체험학습 입력 메뉴에서 반을 선택한 후 학생을 선택합니다.</p></div></div>
+   <div class="guide-item"><span class="guide-num">2</span><div><b>날짜 등록</b><p>날짜를 선택하고 ‘날짜 등록’을 누릅니다. 학생별 사용일수와 잔여일수는 15일 기준으로 자동 계산됩니다.</p></div></div>
+   <div class="guide-item"><span class="guide-num">3</span><div><b>합계 시트 확인</b><p>전체 학생의 등록 날짜, 사용일수, 잔여일수를 확인하고 엑셀(.xls) 파일로 백업할 수 있습니다.</p></div></div>
+   <div class="guide-item"><span class="guide-num">4</span><div><b>11·12월 출석부</b><p>반과 월을 선택하면 현장체험학습 날짜에 ‘체험’이 표시된 반별 출석부가 생성됩니다.</p></div></div>
+   <div class="guide-item"><span class="guide-num">5</span><div><b>수정·초기화·백업</b><p>선택 학생 또는 전체 입력을 초기화할 수 있습니다. 다른 기기에서 이어 쓰려면 엑셀 백업을 보관하세요.</p></div></div>
+  </div>
+  <p class="small">입력 자료는 현재 브라우저에 자동 저장되며 다른 컴퓨터와 자동 공유되지 않습니다.</p>
+  <div class="onboard-actions"><button id="guideBack" class="secondary" type="button">← 이전</button><button id="guideNext" type="button">관리화면으로 이동 →</button></div>
+ </div>
+</section>
+<header id="appHeader"><h1>2026학년도 3학년 현장체험학습 관리</h1><p>엑셀 명렬표 기반 · 학생별 체험학습 날짜 및 잔여일수 · 11~12월 반별 출석부</p></header>
+<main id="appMain">
+<div class="tabs no-print">
+<button class="active" data-tab="manage">현장체험학습 입력</button>
+<button class="secondary" data-tab="summary">합계 시트</button>
+<button class="secondary" data-tab="attendance">11·12월 출석부</button>
+</div>
+<section id="manage" class="panel">
+<h2>학생별 현장체험학습 날짜 입력</h2>
+<div class="controls no-print">
+<label>반 선택<select id="classSelect"></select></label>
+<label>학생 선택<select id="studentSelect"></select></label>
+<label>체험학습 날짜<input id="dateInput" type="date" min="2026-01-01" max="2026-12-31"></label>
+<button id="addDate">날짜 등록</button>
+<button id="resetStudent" class="secondary" type="button">선택 학생 입력 초기화</button>
+<button id="clearAllTop" class="secondary" type="button">전체 입력 초기화</button>
+</div>
+<div class="statrow">
+<div class="stat"><b id="studentCount">0</b><span>선택 반 학생 수</span></div>
+<div class="stat"><b id="usedDays">0</b><span>등록한 체험학습 일수</span></div>
+<div class="stat"><b id="remainingDays">15</b><span>잔여일수</span></div>
+</div>
+<p class="small">학생을 선택한 뒤 날짜를 등록하세요. 날짜가 등록되면 합계 시트와 11·12월 반별 출석부에 자동 반영됩니다. 같은 학생의 동일 날짜는 중복 등록되지 않습니다. 1인당 기준일수는 15일입니다.</p>
+<h2 style="margin-top:22px">선택 학생의 등록 날짜</h2>
+<div id="studentDates" class="small">등록된 날짜가 없습니다.</div>
+</section>
+<section id="summary" class="panel hidden">
+<div class="controls no-print" style="justify-content:space-between">
+<div><h2 style="margin:0">합계 시트</h2><p class="small">날짜별 입력 내역과 15일 기준 잔여일수</p></div>
+<div><button id="exportCsv">합계 CSV 다운로드</button> <button class="secondary" onclick="window.print()">인쇄</button></div>
+</div>
+<div class="controls no-print" style="margin-top:12px"><label>반 필터<select id="summaryClass"><option value="all">전체 반</option></select></label><input id="summarySearch" placeholder="학번 또는 이름 검색"></div>
+<div class="tablewrap"><table id="summaryTable"></table></div>
+</section>
+<section id="attendance" class="panel hidden">
+<div class="controls no-print" style="justify-content:space-between">
+<div><h2 style="margin:0">2026년 11·12월 반별 출석부</h2><p class="small">현장체험학습 날짜는 해당 학생 칸에 ‘체험’으로 자동 표시됩니다. 평일 기준으로 생성합니다.</p></div>
+<div><button onclick="window.print()">출석부 인쇄</button></div>
+</div>
+<div class="controls no-print" style="margin-top:12px">
+<label>반 선택<select id="attendanceClass"></select></label>
+<label>월 선택<select id="attendanceMonth"><option value="11">11월</option><option value="12">12월</option></select></label>
+</div>
+<div id="attendanceTitle" class="month-title"></div>
+<div class="tablewrap"><table id="attendanceTable"></table></div>
+<p class="small">※ 토·일요일은 제외했습니다. 공휴일·학교 재량휴업일은 별도 학사일정 확인 후 필요하면 출석부에서 표시를 추가해 주세요.</p>
+</section>
+<section class="panel no-print">
+<h2>자료 보관 및 이동</h2>
+<div class="controls">
+<button id="downloadBackup" class="secondary">엑셀 파일로 백업(.xls)</button>
+<label>백업 불러오기<input id="restoreFile" type="file" accept=".json,application/json"></label>
+<button id="clearData" class="secondary">전체 입력자료 초기화</button>
+</div>
+<p class="small">입력 자료는 현재 브라우저에 자동 저장됩니다. ‘엑셀 파일로 백업’을 누르면 합계 시트와 날짜별 입력 내역이 포함된 Excel 호환 통합문서(.xls)로 저장됩니다. JSON 백업 파일은 기존 자료 복원용으로 계속 사용할 수 있습니다. 브라우저 데이터 삭제 전에는 백업을 권장합니다.</p>
+</section>
+</main>
+<script>
+const students=[{"class": 1, "id": "30101", "name": "강민재"}, {"class": 1, "id": "30102", "name": "강민호"}, {"class": 1, "id": "30103", "name": "강원우"}, {"class": 1, "id": "30104", "name": "강준형"}, {"class": 1, "id": "30105", "name": "김기현"}, {"class": 1, "id": "30106", "name": "김수호"}, {"class": 1, "id": "30107", "name": "김주온"}, {"class": 1, "id": "30108", "name": "김준서"}, {"class": 1, "id": "30109", "name": "박민철"}, {"class": 1, "id": "30110", "name": "박상진"}, {"class": 1, "id": "30111", "name": "박완규"}, {"class": 1, "id": "30112", "name": "박원빈"}, {"class": 1, "id": "30113", "name": "변서진"}, {"class": 1, "id": "30114", "name": "신동건"}, {"class": 1, "id": "30115", "name": "오승헌"}, {"class": 1, "id": "30116", "name": "윤한빈"}, {"class": 1, "id": "30117", "name": "이승준"}, {"class": 1, "id": "30118", "name": "이은민"}, {"class": 1, "id": "30119", "name": "정민영"}, {"class": 1, "id": "30120", "name": "정서우"}, {"class": 1, "id": "30121", "name": "정원석"}, {"class": 1, "id": "30122", "name": "정윤혁"}, {"class": 1, "id": "30123", "name": "조유성"}, {"class": 1, "id": "30124", "name": "지태웅"}, {"class": 1, "id": "30125", "name": "진우림"}, {"class": 1, "id": "30126", "name": "최동건"}, {"class": 1, "id": "30127", "name": "황승찬"}, {"class": 1, "id": "30128", "name": "김선우"}, {"class": 2, "id": "30201", "name": "강지호"}, {"class": 2, "id": "30202", "name": "김기준"}, {"class": 2, "id": "30203", "name": "김도협"}, {"class": 2, "id": "30204", "name": "김두현"}, {"class": 2, "id": "30205", "name": "김민준"}, {"class": 2, "id": "30206", "name": "김우주박"}, {"class": 2, "id": "30207", "name": "김재혁"}, {"class": 2, "id": "30208", "name": "문시윤"}, {"class": 2, "id": "30209", "name": "박상준"}, {"class": 2, "id": "30210", "name": "박성현"}, {"class": 2, "id": "30211", "name": "박용재"}, {"class": 2, "id": "30212", "name": "박정우"}, {"class": 2, "id": "30213", "name": "백승윤"}, {"class": 2, "id": "30214", "name": "송민석"}, {"class": 2, "id": "30215", "name": "양준혁"}, {"class": 2, "id": "30216", "name": "엄예준"}, {"class": 2, "id": "30217", "name": "예서현"}, {"class": 2, "id": "30218", "name": "이남균"}, {"class": 2, "id": "30219", "name": "이시온"}, {"class": 2, "id": "30220", "name": "이정우"}, {"class": 2, "id": "30221", "name": "이창규"}, {"class": 2, "id": "30222", "name": "장도현"}, {"class": 2, "id": "30223", "name": "전재현"}, {"class": 2, "id": "30224", "name": "정현승"}, {"class": 2, "id": "30225", "name": "정호진"}, {"class": 2, "id": "30226", "name": "조민재"}, {"class": 2, "id": "30227", "name": "조현준"}, {"class": 2, "id": "30228", "name": "황정후"}, {"class": 3, "id": "30301", "name": "권강현"}, {"class": 3, "id": "30302", "name": "김상호"}, {"class": 3, "id": "30303", "name": "김시현"}, {"class": 3, "id": "30304", "name": "김중호"}, {"class": 3, "id": "30305", "name": "김진우"}, {"class": 3, "id": "30306", "name": "김현성"}, {"class": 3, "id": "30307", "name": "박진우"}, {"class": 3, "id": "30308", "name": "박채완"}, {"class": 3, "id": "30309", "name": "선우진"}, {"class": 3, "id": "30310", "name": "소수현"}, {"class": 3, "id": "30311", "name": "신승원"}, {"class": 3, "id": "30312", "name": "양종빈"}, {"class": 3, "id": "30313", "name": "이경현"}, {"class": 3, "id": "30314", "name": "이승현"}, {"class": 3, "id": "30315", "name": "이예준"}, {"class": 3, "id": "30316", "name": "이은찬"}, {"class": 3, "id": "30317", "name": "이정서"}, {"class": 3, "id": "30318", "name": "이현승"}, {"class": 3, "id": "30319", "name": "장원혁"}, {"class": 3, "id": "30320", "name": "정명찬"}, {"class": 3, "id": "30321", "name": "조원형"}, {"class": 3, "id": "30322", "name": "지용재"}, {"class": 3, "id": "30323", "name": "최윤"}, {"class": 3, "id": "30324", "name": "김태환"}, {"class": 4, "id": "30401", "name": "김대은"}, {"class": 4, "id": "30402", "name": "김도형"}, {"class": 4, "id": "30403", "name": "김시우"}, {"class": 4, "id": "30404", "name": "김시헌"}, {"class": 4, "id": "30405", "name": "방기현"}, {"class": 4, "id": "30406", "name": "배하윤"}, {"class": 4, "id": "30407", "name": "신은찬"}, {"class": 4, "id": "30408", "name": "안중현"}, {"class": 4, "id": "30409", "name": "오승현"}, {"class": 4, "id": "30410", "name": "윤동희"}, {"class": 4, "id": "30411", "name": "윤선우"}, {"class": 4, "id": "30412", "name": "이도헌"}, {"class": 4, "id": "30413", "name": "이승민"}, {"class": 4, "id": "30414", "name": "이시형"}, {"class": 4, "id": "30415", "name": "이준영"}, {"class": 4, "id": "30416", "name": "이태경"}, {"class": 4, "id": "30417", "name": "이희영"}, {"class": 4, "id": "30418", "name": "정재헌"}, {"class": 4, "id": "30419", "name": "정현우"}, {"class": 4, "id": "30420", "name": "최은석"}, {"class": 4, "id": "30421", "name": "최진영"}, {"class": 4, "id": "30422", "name": "하지태"}, {"class": 4, "id": "30423", "name": "허성휘"}, {"class": 4, "id": "30424", "name": "전광훈"}, {"class": 5, "id": "30501", "name": "공태원"}, {"class": 5, "id": "30502", "name": "곽은호"}, {"class": 5, "id": "30503", "name": "구자호"}, {"class": 5, "id": "30504", "name": "김강빈"}, {"class": 5, "id": "30505", "name": "김도윤"}, {"class": 5, "id": "30506", "name": "김승현"}, {"class": 5, "id": "30507", "name": "김진헌"}, {"class": 5, "id": "30508", "name": "김하진"}, {"class": 5, "id": "30509", "name": "배재윤"}, {"class": 5, "id": "30510", "name": "성용준"}, {"class": 5, "id": "30511", "name": "송유빈"}, {"class": 5, "id": "30512", "name": "송치현"}, {"class": 5, "id": "30513", "name": "오민성"}, {"class": 5, "id": "30514", "name": "유범선"}, {"class": 5, "id": "30515", "name": "윤시후"}, {"class": 5, "id": "30516", "name": "윤준역"}, {"class": 5, "id": "30517", "name": "이서준"}, {"class": 5, "id": "30518", "name": "이주호"}, {"class": 5, "id": "30519", "name": "이창준"}, {"class": 5, "id": "30520", "name": "임서진"}, {"class": 5, "id": "30521", "name": "조성훈"}, {"class": 5, "id": "30522", "name": "최선우"}, {"class": 5, "id": "30523", "name": "추현준"}, {"class": 5, "id": "30524", "name": "한동균"}, {"class": 5, "id": "30525", "name": "한지훈"}, {"class": 6, "id": "30601", "name": "강부승"}, {"class": 6, "id": "30602", "name": "김남교"}, {"class": 6, "id": "30603", "name": "김성민"}, {"class": 6, "id": "30604", "name": "김유찬"}, {"class": 6, "id": "30605", "name": "김재영"}, {"class": 6, "id": "30606", "name": "김태영"}, {"class": 6, "id": "30607", "name": "김혁순"}, {"class": 6, "id": "30608", "name": "김현"}, {"class": 6, "id": "30609", "name": "박시원"}, {"class": 6, "id": "30610", "name": "배재원"}, {"class": 6, "id": "30611", "name": "송예성"}, {"class": 6, "id": "30612", "name": "신민규"}, {"class": 6, "id": "30613", "name": "염재민"}, {"class": 6, "id": "30614", "name": "오은성"}, {"class": 6, "id": "30615", "name": "유상진"}, {"class": 6, "id": "30616", "name": "윤성원"}, {"class": 6, "id": "30617", "name": "이동우"}, {"class": 6, "id": "30618", "name": "이승주"}, {"class": 6, "id": "30619", "name": "이진정"}, {"class": 6, "id": "30620", "name": "이해준"}, {"class": 6, "id": "30621", "name": "임형렬"}, {"class": 6, "id": "30622", "name": "정윤희"}, {"class": 6, "id": "30623", "name": "조현준"}, {"class": 6, "id": "30624", "name": "최윤호"}, {"class": 7, "id": "30701", "name": "강지효"}, {"class": 7, "id": "30702", "name": "김민성"}, {"class": 7, "id": "30704", "name": "김세연"}, {"class": 7, "id": "30705", "name": "김용현"}, {"class": 7, "id": "30706", "name": "김은성"}, {"class": 7, "id": "30707", "name": "김은수"}, {"class": 7, "id": "30708", "name": "김지훈"}, {"class": 7, "id": "30709", "name": "김진표"}, {"class": 7, "id": "30710", "name": "김현수"}, {"class": 7, "id": "30711", "name": "양지웅"}, {"class": 7, "id": "30712", "name": "오범석"}, {"class": 7, "id": "30713", "name": "유재현"}, {"class": 7, "id": "30714", "name": "이승민"}, {"class": 7, "id": "30715", "name": "이승현"}, {"class": 7, "id": "30716", "name": "이유승"}, {"class": 7, "id": "30717", "name": "이의준"}, {"class": 7, "id": "30718", "name": "이제훈"}, {"class": 7, "id": "30719", "name": "전강현"}, {"class": 7, "id": "30720", "name": "전민재"}, {"class": 7, "id": "30721", "name": "최우경"}, {"class": 7, "id": "30722", "name": "최웅규"}, {"class": 7, "id": "30723", "name": "홍정우"}, {"class": 7, "id": "30724", "name": "황보석"}, {"class": 7, "id": "30726", "name": "황예성"}, {"class": 8, "id": "30801", "name": "강선모"}, {"class": 8, "id": "30802", "name": "김경원"}, {"class": 8, "id": "30803", "name": "김대원"}, {"class": 8, "id": "30804", "name": "김태경"}, {"class": 8, "id": "30805", "name": "김태민"}, {"class": 8, "id": "30806", "name": "노진채"}, {"class": 8, "id": "30807", "name": "문규성"}, {"class": 8, "id": "30808", "name": "민현준"}, {"class": 8, "id": "30809", "name": "박건표"}, {"class": 8, "id": "30810", "name": "박성후"}, {"class": 8, "id": "30811", "name": "박시우"}, {"class": 8, "id": "30812", "name": "박영인"}, {"class": 8, "id": "30813", "name": "손진우"}, {"class": 8, "id": "30814", "name": "심규민"}, {"class": 8, "id": "30815", "name": "오윤재"}, {"class": 8, "id": "30816", "name": "유경완"}, {"class": 8, "id": "30817", "name": "이서원"}, {"class": 8, "id": "30818", "name": "이원경"}, {"class": 8, "id": "30819", "name": "이하민"}, {"class": 8, "id": "30820", "name": "임지환"}, {"class": 8, "id": "30821", "name": "전상현"}, {"class": 8, "id": "30822", "name": "정다형"}, {"class": 8, "id": "30823", "name": "정찬용"}, {"class": 8, "id": "30824", "name": "최지훈"}, {"class": 8, "id": "30825", "name": "한준우"}, {"class": 8, "id": "30826", "name": "지우림"}, {"class": 9, "id": "30901", "name": "구준경"}, {"class": 9, "id": "30902", "name": "권지훈"}, {"class": 9, "id": "30903", "name": "김동현"}, {"class": 9, "id": "30904", "name": "김민찬"}, {"class": 9, "id": "30905", "name": "김선호"}, {"class": 9, "id": "30906", "name": "김정훈"}, {"class": 9, "id": "30907", "name": "김지원"}, {"class": 9, "id": "30908", "name": "박민성"}, {"class": 9, "id": "30909", "name": "손현진"}, {"class": 9, "id": "30910", "name": "손휘찬"}, {"class": 9, "id": "30911", "name": "신예호"}, {"class": 9, "id": "30912", "name": "신은섭"}, {"class": 9, "id": "30913", "name": "신의준"}, {"class": 9, "id": "30914", "name": "신정현"}, {"class": 9, "id": "30915", "name": "양규현"}, {"class": 9, "id": "30916", "name": "윤성민"}, {"class": 9, "id": "30917", "name": "윤유준"}, {"class": 9, "id": "30918", "name": "이시우"}, {"class": 9, "id": "30919", "name": "이재빈"}, {"class": 9, "id": "30920", "name": "장래민"}, {"class": 9, "id": "30921", "name": "전영진"}, {"class": 9, "id": "30922", "name": "조한준"}, {"class": 9, "id": "30923", "name": "최서준"}, {"class": 9, "id": "30924", "name": "추상우"}, {"class": 9, "id": "30925", "name": "하윤중"}, {"class": 9, "id": "30926", "name": "김민재"}, {"class": 10, "id": "31001", "name": "강동우"}, {"class": 10, "id": "31002", "name": "강한서"}, {"class": 10, "id": "31003", "name": "김동우"}, {"class": 10, "id": "31004", "name": "김준영"}, {"class": 10, "id": "31005", "name": "김지오"}, {"class": 10, "id": "31006", "name": "김찬유"}, {"class": 10, "id": "31007", "name": "박지후"}, {"class": 10, "id": "31008", "name": "박희성"}, {"class": 10, "id": "31009", "name": "방승준"}, {"class": 10, "id": "31010", "name": "신우현"}, {"class": 10, "id": "31011", "name": "신인철"}, {"class": 10, "id": "31012", "name": "심재원"}, {"class": 10, "id": "31013", "name": "안재혁"}, {"class": 10, "id": "31014", "name": "옥경한"}, {"class": 10, "id": "31015", "name": "이민욱"}, {"class": 10, "id": "31016", "name": "이예준"}, {"class": 10, "id": "31017", "name": "이윤건"}, {"class": 10, "id": "31018", "name": "이충환"}, {"class": 10, "id": "31019", "name": "이현서"}, {"class": 10, "id": "31020", "name": "장우준"}, {"class": 10, "id": "31021", "name": "전성민"}, {"class": 10, "id": "31022", "name": "정병민"}, {"class": 10, "id": "31023", "name": "정우태"}, {"class": 10, "id": "31024", "name": "정지후"}, {"class": 10, "id": "31025", "name": "최원교"}, {"class": 10, "id": "31026", "name": "최윤찬"}, {"class": 10, "id": "31027", "name": "김재경"}, {"class": 11, "id": "31101", "name": "강규완"}, {"class": 11, "id": "31102", "name": "권윤오"}, {"class": 11, "id": "31103", "name": "김도윤"}, {"class": 11, "id": "31104", "name": "김서환"}, {"class": 11, "id": "31105", "name": "김영현"}, {"class": 11, "id": "31106", "name": "김지훈"}, {"class": 11, "id": "31107", "name": "김진한"}, {"class": 11, "id": "31108", "name": "문규연"}, {"class": 11, "id": "31110", "name": "백승수"}, {"class": 11, "id": "31111", "name": "우준산"}, {"class": 11, "id": "31112", "name": "원준호"}, {"class": 11, "id": "31113", "name": "유동균"}, {"class": 11, "id": "31114", "name": "유한울"}, {"class": 11, "id": "31115", "name": "윤시훈"}, {"class": 11, "id": "31116", "name": "윤지호"}, {"class": 11, "id": "31117", "name": "이선재"}, {"class": 11, "id": "31118", "name": "이승욱"}, {"class": 11, "id": "31119", "name": "이예성"}, {"class": 11, "id": "31120", "name": "이원준"}, {"class": 11, "id": "31121", "name": "이진욱"}, {"class": 11, "id": "31122", "name": "임한호"}, {"class": 11, "id": "31123", "name": "정윤호"}, {"class": 11, "id": "31124", "name": "조승우"}, {"class": 11, "id": "31125", "name": "홍지성"}, {"class": 11, "id": "31126", "name": "김호승"}, {"class": 12, "id": "31201", "name": "강은준"}, {"class": 12, "id": "31202", "name": "권영우"}, {"class": 12, "id": "31203", "name": "김민준"}, {"class": 12, "id": "31204", "name": "김민휘"}, {"class": 12, "id": "31205", "name": "김범준"}, {"class": 12, "id": "31206", "name": "김연우"}, {"class": 12, "id": "31207", "name": "김재형"}, {"class": 12, "id": "31208", "name": "나경후"}, {"class": 12, "id": "31209", "name": "류건욱"}, {"class": 12, "id": "31210", "name": "박기백"}, {"class": 12, "id": "31211", "name": "박성찬"}, {"class": 12, "id": "31212", "name": "박재인"}, {"class": 12, "id": "31213", "name": "양인서"}, {"class": 12, "id": "31214", "name": "어형진"}, {"class": 12, "id": "31215", "name": "오승준"}, {"class": 12, "id": "31216", "name": "왕지윤"}, {"class": 12, "id": "31217", "name": "원우진"}, {"class": 12, "id": "31218", "name": "이경섭"}, {"class": 12, "id": "31219", "name": "이승민"}, {"class": 12, "id": "31220", "name": "이은후"}, {"class": 12, "id": "31221", "name": "이재원"}, {"class": 12, "id": "31222", "name": "이정우"}, {"class": 12, "id": "31223", "name": "이찬우"}, {"class": 12, "id": "31224", "name": "정성균"}, {"class": 12, "id": "31225", "name": "최해성"}, {"class": 12, "id": "31226", "name": "이동현"}];
+const STORE='fieldtrip_2026_grade3_v1';
+let records={};
+try{records=JSON.parse(localStorage.getItem(STORE)||'{}')}catch(e){records={}}
+const classes=[...new Set(students.map(s=>s.class))].sort((a,b)=>a-b);
+const $=id=>document.getElementById(id);
+$('loginForm').addEventListener('submit',e=>{
+ e.preventDefault();
+ const id=$('loginId').value.trim(),pw=$('loginPw').value;
+ if(id==='bugil2026'&&pw==='bugil8700'){
+  $('loginScreen').style.display='none';
+  $('welcomeScreen').style.display='flex';
+  $('loginError').textContent='';
+  $('loginPw').value='';
+ }else{
+  $('loginError').textContent='아이디 또는 비밀번호가 올바르지 않습니다.';
+  $('loginPw').value='';
+  $('loginPw').focus();
+ }
+});
+
+$('welcomeNext').addEventListener('click',()=>{$('welcomeScreen').style.display='none';$('guideScreen').style.display='flex';});
+$('guideBack').addEventListener('click',()=>{$('guideScreen').style.display='none';$('welcomeScreen').style.display='flex';});
+$('guideNext').addEventListener('click',()=>{$('guideScreen').style.display='none';$('appHeader').style.display='block';$('appMain').style.display='block';window.scrollTo(0,0);});
+
+function save(){localStorage.setItem(STORE,JSON.stringify(records))}
+function key(id){return String(id)}
+function dates(id){return [...new Set(records[key(id)]||[])].sort()}
+function remaining(id){return Math.max(0,15-dates(id).length)}
+function fillClass(sel,all=false){sel.innerHTML=(all?'<option value="all">전체 반</option>':'')+classes.map(c=>`<option value="${c}">${c}반</option>`).join('')}
+fillClass($('classSelect'));fillClass($('attendanceClass'));fillClass($('summaryClass'),true);
+function fillStudents(){
+ const c=+$('classSelect').value, list=students.filter(s=>s.class===c);
+ $('studentSelect').innerHTML=list.map(s=>`<option value="${s.id}">${s.id} · ${s.name}</option>`).join('');
+ $('studentCount').textContent=list.length;renderSelected();
+}
+function renderSelected(){
+ const id=$('studentSelect').value,s=students.find(x=>x.id===id);if(!s)return;
+ const ds=dates(id);$('usedDays').textContent=ds.length;$('remainingDays').textContent=remaining(id);
+ $('studentDates').innerHTML=ds.length?ds.map(d=>`<span class="badge">${d}</span> <button class="secondary no-print" style="padding:3px 7px;margin:2px" onclick="removeDate('${id}','${d}')">삭제</button>`).join(' '):'등록된 날짜가 없습니다.';
+}
+function removeDate(id,d){records[key(id)]=dates(id).filter(x=>x!==d);save();renderSelected();renderSummary();renderAttendance()}
+$('classSelect').addEventListener('change',fillStudents);$('studentSelect').addEventListener('change',renderSelected);
+$('resetStudent').onclick=()=>{
+ const id=$('studentSelect').value;
+ if(!id){alert('초기화할 학생을 선택하세요.');return}
+ const s=students.find(x=>x.id===id);
+ if(confirm(`${s.class}반 ${s.name} 학생의 현장체험학습 날짜 ${dates(id).length}건을 모두 초기화할까요?`)){
+  delete records[key(id)];save();renderSelected();renderSummary();renderAttendance();
+ }
+};
+function clearAllInputs(){
+ if(confirm('모든 반 학생의 현장체험학습 입력 날짜를 전부 삭제할까요? 이 작업은 되돌릴 수 없습니다. 백업이 필요하면 먼저 백업하세요.')){
+  records={};save();fillStudents();renderSummary();renderAttendance();
+ }
+}
+$('clearAllTop').onclick=clearAllInputs;
+$('addDate').onclick=()=>{
+ const id=$('studentSelect').value,d=$('dateInput').value;if(!id||!d){alert('학생과 날짜를 선택하세요.');return}
+ const ds=dates(id);if(ds.includes(d)){alert('이미 등록된 날짜입니다.');return}
+ if(ds.length>=15){alert('기준일수 15일이 모두 등록되었습니다.');return}
+ records[key(id)]=[...ds,d];save();$('dateInput').value='';renderSelected();renderSummary();renderAttendance();
+};
+function renderSummary(){
+ const c=$('summaryClass').value,q=$('summarySearch').value.trim().toLowerCase();
+ const list=students.filter(s=>(c==='all'||s.class===+c)&&(!q||s.id.includes(q)||s.name.toLowerCase().includes(q)));
+ let h='<thead><tr><th>반</th><th>학번</th><th>이름</th>'+Array.from({length:15},(_,i)=>`<th>${i+1}</th>`).join('')+'<th>사용일수</th><th>잔여일수</th></tr></thead><tbody>';
+ h+=list.map(s=>{let ds=dates(s.id);return `<tr><td>${s.class}</td><td>${s.id}</td><td class="name">${s.name}</td>${Array.from({length:15},(_,i)=>`<td>${ds[i]||''}</td>`).join('')}<td>${ds.length}</td><td class="left">${remaining(s.id)}</td></tr>`}).join('');
+ $('summaryTable').innerHTML=h+'</tbody>';
+}
+$('summaryClass').onchange=renderSummary;$('summarySearch').oninput=renderSummary;
+function weekdays(month){
+ const out=[],days=new Date(2026,month,0).getDate();
+ for(let d=1;d<=days;d++){let dt=new Date(2026,month-1,d),w=dt.getDay();if(w!==0&&w!==6)out.push({day:d,week:['일','월','화','수','목','금','토'][w]})}
+ return out;
+}
+function renderAttendance(){
+ const c=+$('attendanceClass').value,m=+$('attendanceMonth').value,ds=weekdays(m);
+ $('attendanceTitle').textContent=`2026학년도 3학년 ${c}반 · ${m}월 출석부`;
+ let h='<thead><tr><th>학번</th><th>이름</th>'+ds.map(x=>`<th>${x.day}<br>(${x.week})</th>`).join('')+'<th>체험학습</th></tr></thead><tbody>';
+ students.filter(s=>s.class===c).forEach(s=>{
+  const ex=dates(s.id);h+=`<tr><td>${s.id}</td><td class="name">${s.name}</td>`+ds.map(x=>{let d=`2026-${String(m).padStart(2,'0')}-${String(x.day).padStart(2,'0')}`;return `<td class="${ex.includes(d)?'danger':''}">${ex.includes(d)?'체험':''}</td>`}).join('')+`<td>${ex.filter(d=>d.startsWith(`2026-${String(m).padStart(2,'0')}-`)).length}</td></tr>`;
+ });
+ $('attendanceTable').innerHTML=h+'</tbody>';
+}
+$('attendanceClass').onchange=renderAttendance;$('attendanceMonth').onchange=renderAttendance;
+document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{
+ document.querySelectorAll('[data-tab]').forEach(x=>{x.classList.toggle('active',x===b);x.classList.toggle('secondary',x!==b)});
+ ['manage','summary','attendance'].forEach(id=>$(id).classList.toggle('hidden',id!==b.dataset.tab));
+ if(b.dataset.tab==='summary')renderSummary();if(b.dataset.tab==='attendance')renderAttendance();
+});
+$('exportCsv').onclick=()=>{
+ const rows=[['반','학번','이름',...Array.from({length:15},(_,i)=>`${i+1}회차`),'사용일수','잔여일수']];
+ students.forEach(s=>{let ds=dates(s.id);rows.push([s.class,s.id,s.name,...Array.from({length:15},(_,i)=>ds[i]||''),ds.length,remaining(s.id)])});
+ const csv='\uFEFF'+rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\r\n');
+ download(new Blob([csv],{type:'text/csv;charset=utf-8'}),'2026_3학년_현장체험학습_합계.csv');
+};
+function download(blob,name){let a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();URL.revokeObjectURL(a.href)}
+function xmlEscape(v){
+ return String(v??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&apos;');
+}
+function excelCell(value){
+ const isNum=typeof value==='number';
+ return `<Cell><Data ss:Type="${isNum?'Number':'String'}">${xmlEscape(value)}</Data></Cell>`;
+}
+function excelRow(values){return `<Row>${values.map(excelCell).join('')}</Row>`}
+$('downloadBackup').onclick=()=>{
+ const summaryRows=[['반','학번','이름',...Array.from({length:15},(_,i)=>`${i+1}회차 날짜`),'사용일수','잔여일수']];
+ students.forEach(s=>{
+  const ds=dates(s.id);
+  summaryRows.push([s.class,s.id,s.name,...Array.from({length:15},(_,i)=>ds[i]||''),ds.length,remaining(s.id)]);
+ });
+ const detailRows=[['반','학번','이름','현장체험학습 날짜']];
+ students.forEach(s=>dates(s.id).forEach(d=>detailRows.push([s.class,s.id,s.name,d])));
+ const workbook=`<?xml version="1.0" encoding="UTF-8"?>
+<?mso-application progid="Excel.Sheet"?>
+<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+ xmlns:o="urn:schemas-microsoft-com:office:office"
+ xmlns:x="urn:schemas-microsoft-com:office:excel"
+ xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">
+ <Styles><Style ss:ID="Header"><Font ss:Bold="1"/><Interior ss:Color="#D9EAF7" ss:Pattern="Solid"/><Alignment ss:Horizontal="Center"/></Style></Styles>
+ <Worksheet ss:Name="합계"><Table>${summaryRows.map((r,i)=>i===0?`<Row>${r.map(v=>`<Cell ss:StyleID="Header"><Data ss:Type="String">${xmlEscape(v)}</Data></Cell>`).join('')}</Row>`:excelRow(r)).join('')}</Table><WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel"><FreezePanes/><FrozenNoSplit/><SplitHorizontal>1</SplitHorizontal><TopRowBottomPane>1</TopRowBottomPane></WorksheetOptions></Worksheet>
+ <Worksheet ss:Name="날짜별 입력"><Table>${detailRows.map((r,i)=>i===0?`<Row>${r.map(v=>`<Cell ss:StyleID="Header"><Data ss:Type="String">${xmlEscape(v)}</Data></Cell>`).join('')}</Row>`:excelRow(r)).join('')}</Table><WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel"><FreezePanes/><FrozenNoSplit/><SplitHorizontal>1</SplitHorizontal><TopRowBottomPane>1</TopRowBottomPane></WorksheetOptions></Worksheet>
+</Workbook>`;
+ download(new Blob(['\uFEFF',workbook],{type:'application/vnd.ms-excel;charset=utf-8'}),'2026_3학년_현장체험학습_입력자료_백업.xls');
+};
+$('restoreFile').onchange=async e=>{try{let obj=JSON.parse(await e.target.files[0].text());if(!obj||typeof obj!=='object'||Array.isArray(obj))throw 0;records=obj;save();fillStudents();renderSummary();renderAttendance();alert('백업 자료를 불러왔습니다.')}catch(err){alert('올바른 백업 JSON 파일이 아닙니다.')}e.target.value=''};
+$('clearData').onclick=clearAllInputs;
+fillStudents();renderSummary();renderAttendance();
+</script>
+</body></html>
